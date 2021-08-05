@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
+
 
 import FormInput from './FormInput';
 import SubmitButton from './SubmitBtn';
+import { sessionService } from 'redux-react-session';
+import { withRouter } from 'react-router';
 
-const SignIn = () => {
+const SignIn = ({history}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -14,22 +18,26 @@ const SignIn = () => {
     axios({
       method: 'post',
       url: 'http://localhost:3000/authenticate',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
       data: {
-        attributes: {
-            username,
-            password,
-          },
+        username,
+        password,
         },
     })
-      .then(() => {
+    .then(({ data: res }) => {
+        const { data: { id } } = res;
+        const { data: { token } } = res;
 
+        sessionService.saveSession({token})
+        .then(() => {
+            sessionService.saveUser({ id })
+              .then(() => {
+                history.push('/');
+              });
+        });
       })
-      .catch(() => {
-
+      .catch((err) => {
+        // eslint-disable-next-line
+        console.log(err);
       });
   };
 
@@ -71,4 +79,10 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+SignIn.propTypes = {
+    history: PropTypes.shape({
+        push: PropTypes.func,
+    }).isRequired,
+};
+
+export default withRouter(SignIn);
