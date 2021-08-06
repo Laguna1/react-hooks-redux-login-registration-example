@@ -17,11 +17,13 @@ const SignIn = ({history}) => {
 
     axios({
       method: 'post',
-      url: 'http://localhost:3000/authenticate',
+      url: 'http://localhost:3000/api/v1/authenticate',
       data: {
-        username,
-        password,
+        user: {
+          username,
+          password,
         },
+      },
     })
     .then(({ data: res }) => {
         const { data: { id } } = res;
