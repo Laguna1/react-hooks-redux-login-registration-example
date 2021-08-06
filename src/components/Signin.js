@@ -19,11 +19,9 @@ const SignIn = ({history}) => {
       method: 'post',
       url: 'http://localhost:3000/api/v1/authenticate',
       data: {
-        user: {
           username,
           password,
         },
-      },
     })
     .then(({ data: res }) => {
         const { data: { id } } = res;
@@ -56,7 +54,7 @@ const SignIn = ({history}) => {
   return (
     <div className="sign-in">
       <h2>I already have an account</h2>
-      <span>Sign in with your email and password</span>
+      <span>Sign in with your name and password</span>
 
       <form onSubmit={handleSubmit}>
         <FormInput
